@@ -3,6 +3,7 @@
 .env.local
 .venv
 venv/
+.env.example
 
 # Python caching
 __pycache__/
