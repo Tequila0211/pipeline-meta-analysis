@@ -1,0 +1,10 @@
+pandas
+pyyaml
+openpyxl
+fpdf
+pdfplumber
+rank_bm25
+google-generativeai
+jsonschema
+streamlit
+python-dotenv

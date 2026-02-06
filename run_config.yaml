@@ -1,0 +1,56 @@
+run_id: "2026-02-05-init"
+manifest_path: "manifest.xlsx"
+pdf_dir: "pdfs"
+
+filters:
+  dt_include: ["ARTICLE", "ARTICLE; EARLY ACCESS"]
+  dt_exclude: ["REVIEW", "BOOK CHAPTER", "ARTICLE; PROCEEDINGS PAPER"]
+
+matching:
+  prefer_doi: true
+  fuzzy_title_threshold: 0.88
+
+rag:
+  bm25_top_k_pages: 15
+  min_pages: 6
+  max_pages: 20
+  query_templates:
+    - "overheating hours"
+    - "degree-hours"
+    - "discomfort hours"
+    - "operative temperature"
+    - "TM52"
+    - "ASHRAE 55"
+    - "EN 16798"
+    - "U-value"
+    - "transmittance"
+    - "SHGC"
+    - "g-value"
+    - "retrofit"
+    - "renovation"
+
+triage:
+  enable_ai_for_maybe: true
+  model: "gemini-2.0-flash-lite-preview-02-05" # Updated to latest or requested
+  max_input_pages: 8
+
+extraction:
+  model: "gemini-2.0-flash-001"
+  max_input_pages: 15
+  max_retries_fix: 1
+  require_evidence_for_numeric: true
+
+images:
+  enable_fallback: true
+  dpi: 350
+  max_pages_per_doc: 6
+  trigger_if_null_critical: true
+  trigger_if_table_figure_signal: true
+
+rate_limits:
+  max_concurrent_requests: 2
+  requests_per_minute_soft: 30
+
+logging:
+  write_request_payloads: false
+  write_model_responses: true

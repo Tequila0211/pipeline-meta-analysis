@@ -1,0 +1,89 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "outcomeB_measurement.schema.json",
+    "title": "Outcome B measurement (indoor/operative temperature)",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "outcome_family",
+        "temp_metric",
+        "statistic",
+        "aggregation_period",
+        "baseline_value",
+        "retrofit_value",
+        "unit",
+        "numeric_source_quality",
+        "is_primary",
+        "primary_rule_applied",
+        "evidence"
+    ],
+    "properties": {
+        "outcome_family": {
+            "const": "B"
+        },
+        "temp_metric": {
+            "enum": [
+                "operative_temperature",
+                "indoor_air_temperature",
+                "mean_radiant_temperature"
+            ]
+        },
+        "statistic": {
+            "enum": [
+                "mean",
+                "max",
+                "min",
+                "p95",
+                "daily_max_mean",
+                "night_mean"
+            ]
+        },
+        "aggregation_period": {
+            "enum": [
+                "occupied",
+                "day",
+                "night",
+                "24h",
+                "seasonal",
+                "heatwave_window",
+                "annual"
+            ]
+        },
+        "zone_definition": {
+            "type": "string"
+        },
+        "baseline_value": {
+            "type": "number"
+        },
+        "retrofit_value": {
+            "type": "number"
+        },
+        "unit": {
+            "const": "C"
+        },
+        "variance": {
+            "$ref": "core_extraction.schema.json#/definitions/variance"
+        },
+        "numeric_source_quality": {
+            "enum": [
+                "table",
+                "text",
+                "figure_digitized",
+                "supplement"
+            ]
+        },
+        "is_primary": {
+            "type": "boolean"
+        },
+        "primary_rule_applied": {
+            "enum": [
+                "time_window_priority",
+                "metric_priority",
+                "availability"
+            ]
+        },
+        "evidence": {
+            "$ref": "core_extraction.schema.json#/definitions/evidence_anchor"
+        }
+    }
+}

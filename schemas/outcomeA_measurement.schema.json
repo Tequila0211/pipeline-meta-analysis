@@ -1,0 +1,98 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "outcomeA_measurement.schema.json",
+    "title": "Outcome A measurement (overheating/discomfort/degree-hours)",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "outcome_family",
+        "metric_A",
+        "comfort_standard",
+        "threshold_definition",
+        "aggregation_period",
+        "baseline_value",
+        "retrofit_value",
+        "unit",
+        "numeric_source_quality",
+        "is_primary",
+        "primary_rule_applied",
+        "evidence"
+    ],
+    "properties": {
+        "outcome_family": {
+            "const": "A"
+        },
+        "metric_A": {
+            "enum": [
+                "overheating_hours",
+                "discomfort_hours",
+                "degree_hours",
+                "overheating_degree_hours",
+                "exceedance_hours"
+            ]
+        },
+        "comfort_standard": {
+            "enum": [
+                "TM52",
+                "ASHRAE55",
+                "EN16798",
+                "ISO7730",
+                "other",
+                "none_reported"
+            ]
+        },
+        "threshold_definition": {
+            "type": "string"
+        },
+        "aggregation_period": {
+            "enum": [
+                "occupied",
+                "day",
+                "night",
+                "24h",
+                "seasonal",
+                "heatwave_window",
+                "annual"
+            ]
+        },
+        "zone_definition": {
+            "type": "string"
+        },
+        "baseline_value": {
+            "type": "number"
+        },
+        "retrofit_value": {
+            "type": "number"
+        },
+        "unit": {
+            "enum": [
+                "h",
+                "K_h"
+            ]
+        },
+        "variance": {
+            "$ref": "core_extraction.schema.json#/definitions/variance"
+        },
+        "numeric_source_quality": {
+            "enum": [
+                "table",
+                "text",
+                "figure_digitized",
+                "supplement"
+            ]
+        },
+        "is_primary": {
+            "type": "boolean"
+        },
+        "primary_rule_applied": {
+            "enum": [
+                "time_window_priority",
+                "standard_priority",
+                "availability"
+            ]
+        },
+        "evidence": {
+            "$ref": "core_extraction.schema.json#/definitions/evidence_anchor"
+        }
+    }
+}

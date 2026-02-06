@@ -1,0 +1,37 @@
+# Environment variables
+.env
+.env.local
+.venv
+venv/
+
+# Python caching
+__pycache__/
+*.py[cod]
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Project Inputs (Large Data)
+pdfs/
+# manifest.xlsx # Uncomment if this contains private data, otherwise keep as template
+
+# Pipeline Generated Outputs
+pdf_index.csv
+references_filtered.csv
+state.sqlite
+run_log.md
+
+# Generated Directories
+pages_text/
+pages_img/
+extractions_raw/
+extractions_valid/
+extractions_approved/
+validation_reports/
+exports/
+audit/
+
+# IDE
+.vscode/
+.idea/

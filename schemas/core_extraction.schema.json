@@ -1,0 +1,280 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "core_extraction.schema.json",
+  "title": "Core extraction schema (robust multi-unit/multi-package/multi-scenario)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "reference_id",
+    "doc_id",
+    "study",
+    "building",
+    "units",
+    "scenarios",
+    "conditions",
+    "comparisons",
+    "measurements"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "project_id": { "type": "string" },
+    "reference_id": { "type": "string" },
+    "doc_id": { "type": "string" },
+
+    "study": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["study_type", "study_design"],
+      "properties": {
+        "study_type": { "enum": ["simulation", "empirical", "mixed"] },
+        "study_design": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+
+    "building": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["building_type", "location_country", "hvac_status"],
+      "properties": {
+        "building_type": {
+          "enum": ["residential", "school", "educational", "public", "office", "healthcare", "other"]
+        },
+        "building_subtype": { "type": "string" },
+        "location_country": { "type": "string" },
+        "location_city": { "type": "string" },
+        "climate_class": { "type": "string" },
+        "hvac_status": { "enum": ["none", "mixed_mode", "full_mechanical", "unknown"] },
+        "zone_definition": { "type": "string" }
+      }
+    },
+
+    "units": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["unit_id", "unit_type", "unit_label"],
+        "properties": {
+          "unit_id": { "type": "string" },
+          "unit_type": { "enum": ["building", "zone", "model", "other"] },
+          "unit_label": { "type": "string" },
+          "unit_overrides": { "type": "object" },
+          "evidence": { "$ref": "#/definitions/evidence_anchor" }
+        }
+      }
+    },
+
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scenario_id", "scenario_label", "heat_context", "time_window"],
+        "properties": {
+          "scenario_id": { "type": "string" },
+          "scenario_label": { "type": "string" },
+          "heat_context": { "enum": ["typical_summer", "heatwave_event", "extreme_heat_scenario", "annual"] },
+          "weather_source": { "type": "string" },
+          "year_context": { "type": "string" },
+          "time_window": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["time_window_type", "definition", "occupied_hours_rule"],
+            "properties": {
+              "time_window_type": { "enum": ["heatwave_window", "seasonal_summer", "annual", "other"] },
+              "definition": { "type": "string" },
+              "occupied_hours_rule": { "type": "string" }
+            }
+          },
+          "evidence": { "$ref": "#/definitions/evidence_anchor" }
+        }
+      }
+    },
+
+    "conditions": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["condition_id", "condition_role", "package_label", "strategy_family"],
+        "properties": {
+          "condition_id": { "type": "string" },
+          "condition_role": { "enum": ["baseline", "retrofit"] },
+          "package_label": { "type": "string" },
+          "strategy_family": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "enum": [
+                "shading",
+                "natural_ventilation",
+                "solar_control",
+                "cool_roof",
+                "thermal_insulation",
+                "pcm",
+                "green_roof",
+                "green_facade",
+                "thermal_mass",
+                "hybrid",
+                "other"
+              ]
+            }
+          },
+          "strategy_items": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/strategy_item" }
+          },
+          "envelope_components": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/envelope_component" }
+          },
+          "operation_profile": { "$ref": "#/definitions/operation_profile" }
+        }
+      }
+    },
+
+    "comparisons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "comparison_id",
+          "unit_id",
+          "scenario_id",
+          "baseline_condition_id",
+          "retrofit_condition_id",
+          "comparator_type",
+          "boundary_match_level"
+        ],
+        "properties": {
+          "comparison_id": { "type": "string" },
+          "unit_id": { "type": "string" },
+          "scenario_id": { "type": "string" },
+          "baseline_condition_id": { "type": "string" },
+          "retrofit_condition_id": { "type": "string" },
+          "comparator_type": {
+            "enum": [
+              "controlled_simulation_same_model",
+              "before_after_same_building_controlled",
+              "before_after_same_building_uncontrolled",
+              "with_without_different_buildings",
+              "other"
+            ]
+          },
+          "boundary_match_level": { "enum": ["high", "medium", "low", "unknown"] },
+          "boundary_notes": { "type": "string" }
+        }
+      }
+    },
+
+    "measurements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          { "$ref": "outcomeA_measurement.schema.json" },
+          { "$ref": "outcomeB_measurement.schema.json" }
+        ]
+      }
+    }
+  },
+
+  "definitions": {
+    "evidence_anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["page"],
+      "properties": {
+        "page": { "type": "integer", "minimum": 0 },
+        "quote": { "type": "string" },
+        "bbox": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x1", "y1", "x2", "y2"],
+          "properties": {
+            "x1": { "type": "number", "minimum": 0, "maximum": 1 },
+            "y1": { "type": "number", "minimum": 0, "maximum": 1 },
+            "x2": { "type": "number", "minimum": 0, "maximum": 1 },
+            "y2": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        }
+      }
+    },
+
+    "variance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["sd", "se", "ci95", "none"] },
+        "value": { "type": "number" },
+        "n": { "type": "integer", "minimum": 1 }
+      }
+    },
+
+    "strategy_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["family"],
+      "properties": {
+        "family": {
+          "enum": [
+            "shading",
+            "natural_ventilation",
+            "solar_control",
+            "cool_roof",
+            "thermal_insulation",
+            "pcm",
+            "green_roof",
+            "green_facade",
+            "thermal_mass",
+            "hybrid",
+            "other"
+          ]
+        },
+        "subtype": { "type": "string" },
+        "intensity_fields": { "type": "object" },
+        "evidence": { "$ref": "#/definitions/evidence_anchor" }
+      }
+    },
+
+    "envelope_component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component_type"],
+      "properties": {
+        "component_type": { "enum": ["roof", "external_wall", "floor", "window", "door", "other"] },
+        "u_value_W_m2K": { "type": "number" },
+        "shgc_or_g_value": { "type": "number", "minimum": 0, "maximum": 1 },
+        "wwr": { "type": "number", "minimum": 0, "maximum": 1 },
+        "notes": { "type": "string" },
+        "evidence": { "$ref": "#/definitions/evidence_anchor" }
+      }
+    },
+
+    "operation_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ventilation_type": { "enum": ["natural", "mechanical", "mixed", "unknown"] },
+        "ventilation_rate": { "type": "number" },
+        "ventilation_rate_unit": { "type": "string" },
+        "infiltration_rate_ach": { "type": "number" },
+        "setpoint_cooling_C": { "type": "number" },
+        "window_opening_rule": { "type": "string" },
+        "internal_gains": { "type": "number" },
+        "internal_gains_unit": { "type": "string" },
+        "occupancy_profile": { "enum": ["measured", "standard", "assumed", "unknown"] },
+        "evidence": { "$ref": "#/definitions/evidence_anchor" }
+      }
+    }
+  }
+}
